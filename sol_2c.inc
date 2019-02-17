@@ -1,8 +1,12 @@
-#pragma once
-
 #include <math.h>
 
-#define SOL_OBSERVE(cmts, params) ((cmts).cent / (params).V)
+#define SOL_DESCRIPTION "two-compartment model with first-order elimination"
+
+#define SOL_REFERENCE \
+"Abuhelwa AY, Foster DJ, Upton RN. \
+ADVAN-style analytical solutions for common pharmacokinetic models. \
+Journal of pharmacological and toxicological methods. \
+2015 May 1;73:42-8."
 
 struct sol_params {
     double k12;
@@ -16,7 +20,7 @@ struct sol_cmts {
     double periph;
 };
 
-struct sol_cmts evolve(struct sol_cmts C, double t, double R, struct sol_params params)
+struct sol_cmts sol_evolve(struct sol_params params, struct sol_cmts C, double t, double R)
 {
 
     double E1 = params.k10 + params.k12;

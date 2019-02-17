@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "prng.inc"
@@ -23,9 +24,9 @@ double norm()
 
 /* The Cholesky decomposition of the covariance matrix is applied to impose correlation on a vector */
 /* Lower triangular */
-double *cholesky(const double *A, size_t n)
+void cholesky(const double *A, double *L, size_t n)
 {
-    double *L = (double *)calloc(n * n, sizeof(double));
+    memset(L, 0, n * n * sizeof(*L));
  
     for (size_t i = 0; i < n; i++)
         for (size_t j = 0; j < (i+1); j++) {
@@ -39,24 +40,21 @@ double *cholesky(const double *A, size_t n)
                 sqrt(A[i * n + i] - s) :
                 (1.0 / L[j * n + j] * (A[i * n + j] - s));
         }
- 
-    return L;
 }
 
-double *mvnorm(const double *omega, size_t dim)
+void mvnorm(const double *omega, double *ary, size_t dim)
 {
-    double *ary = (double *)malloc(dim * sizeof(*ary));
-
     /* Initially, a vector of samples from the standard normal */
     for (size_t i = 0; i < dim; i++) {
         ary[i] = norm();
     }
 
     /* Take the Cholesky transform of omega (please compiler please partial) */
-    double *chol = cholesky(omega, dim);
+    double chol[dim * dim];
+    cholesky(omega, chol, dim);
 
     /* Dirty work of matrix multiplication */
-    double *ary2 = (double *)malloc(dim * sizeof(*ary2));
+    double ary2[dim];
 
     for (size_t row = 0; row < dim; row++) {
         ary2[row] = 0.0;
@@ -65,8 +63,5 @@ double *mvnorm(const double *omega, size_t dim)
         }
     }
 
-    free(ary);
-    free(chol);
-
-    return ary2;
+    memcpy(ary, ary2, dim * sizeof(*ary));
 }
