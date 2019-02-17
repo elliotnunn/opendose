@@ -2,6 +2,8 @@
 
 PREFIX=baypk_
 
+CCOPTS="-std=c99 -O2 -Wall -Werror -Wextra -pedantic"
+
 mkdir -p bin/ macros/
 
 for mod in mod_*.inc; do
@@ -9,6 +11,6 @@ for mod in mod_*.inc; do
 
 	inputfiles="-include $mod main.c"
 
-	gcc -o bin/$base -O2 $inputfiles
-	gcc -dM -E -o /dev/stdout $inputfiles | grep '^#define \(MOD\|SOL\)_' > macros/$base.h
+	gcc -o bin/$base $CCOPTS $inputfiles
+	gcc -dM -E -o /dev/stdout $CCOPTS $inputfiles | grep '^#define \(MOD\|SOL\)_' > macros/$base.h
 done
