@@ -15,10 +15,6 @@ Declare these structs.
 - `mod_params`: a member for each fixed input to the model, e.g. `tbw` for total body weight
 - `mod_eta`: one member `vector[]` the length of an eta vector
 
-Declare these constants.
-
-- `mod_omega[]`: a covariance matrix describing the multivariate normal distribution of eta vectors between subjects. The matrix is flattened into a single C array in row-major form, with the covariances in the lower triangle and zeros in the upper triangle. Remember that the diagonal (upper left to lower right) contains variances, not standard deviations. Likewise, the lower triangle contains covariances, not correlation coefficients. Lastly, note that the mean value of each element of eta is zero, so this covariance matrix is sufficient to describe the eta distribution without a "mean vector".
-
 Declare these functions.
 
 - `struct sol_params mod_theta(struct mod_params, struct mod_eta)`: based on the fixed model parameters and an eta describing an individual, and returns a `sol_params` struct to be passed into the pharmacokinetic solver
@@ -33,6 +29,7 @@ Define these macros. They allow `opendose` to expose the characteristics of the 
 - `MOD_DRUG_UNIT` (string literal): the drug units (e.g. "mg")
 - `MOD_TIME_UNIT` (string literal): the time units ("h" very strongly encouraged)
 - `MOD_X_PARAMS` (X-macro): an `X(member_name, natural_name_literal, unit_literal)` macro call for each member of `mod_params`
+- `MOD_OMEGA` (comma-separated literals): a covariance matrix describing the multivariate normal distribution of eta vectors between subjects. The matrix is flattened into row-major form, with the covariances in the lower triangle and zeros in the upper triangle. Remember that the diagonal (upper left to lower right) contains variances, not standard deviations. Likewise, the lower triangle contains covariances, not correlation coefficients. Lastly, note that the mean value of each element of eta is zero, so this covariance matrix is sufficient to describe the eta distribution without a "mean vector".
 - `MOD_X_THETA` (X-macro): an `X(index, dependent_var_literal, independent_vars_literal)` macro call for each element of eta, describing the model variable that depends on that element of eta, and any independent model parameters that also contribute to that same dependent variable. The `independent_vars_literal` should be delimited like `"one fish, two fish"`, or be an empty string `""` if necessary.
 - `MOD_OB_UNIT` (string literal): the unit that observations are made in
 

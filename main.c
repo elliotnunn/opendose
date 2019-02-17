@@ -148,7 +148,8 @@ MOD_X_PARAMS
             try_cnt++;
 
             /* Select an eta vector to accept or reject */
-            mvnorm(mod_omega, eta.vector, ETA_LEN);
+            const double omega[] = {MOD_OMEGA};
+            mvnorm(omega, eta.vector, ETA_LEN);
             struct sol_params s_params = mod_theta(m_params, eta);
 
             /* Check only the time points where LEVEL directives are supplied */
