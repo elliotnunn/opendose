@@ -7,7 +7,7 @@
 #include "prng.inc"
 
 #define APPEND(array, size, el) {array = realloc(array, (size + 1) * sizeof(*array)); array[size] = el;}
-#define ETA_LEN (sizeof(eta.vector)/sizeof(eta.vector[0]))
+#define ETA_LEN (sizeof (struct mod_eta){0}.vector / sizeof (struct mod_eta){0}.vector[0])
 
 void print_eta(struct mod_eta eta)
 {
@@ -24,7 +24,7 @@ void sim_and_print(struct sol_params s_params, struct event *ev_list, size_t ev_
 
     for (size_t i = 0; i < get_count; i++) {
         double observation = mod_observe(s_params, sim[i]);
-        printf("%lf " MOD_TIME_UNIT " %lf " MOD_OB_UNIT "\n", get_times[i], observation);
+        printf("# %lf " MOD_TIME_UNIT " %lf " MOD_OB_UNIT "\n", get_times[i], observation);
     }
 
     free(sim);
@@ -41,14 +41,14 @@ int main(void)
     /* Array of time points to be simulated (GET directives) */
     double *get_times = NULL; size_t get_count = 0;
 
+    /* 0 for LEVEL/TRY/MAX, 1 for ETA (set by MANUAL directive) */
+    int manual = 0;
+
     /* Array of levels to inform Bayes estimation (LEVEL directives) */
     double *level_times = NULL, *level_list = NULL; size_t level_count = 0;
 
-    /* Alternative to LEVEL directives, specify ETA directives */
-    struct mod_eta eta;
-
-    /* Does the user specify a single eta instead of asking for a sample? */
-    int user_supplied_eta = 0;
+    /* Array of explicit etas instead of Bayes est (ETA directives) */
+    struct mod_eta *eta_list = NULL; size_t eta_count = 0;
 
     size_t max_try = SIZE_MAX, max_win = SIZE_MAX;
 
@@ -64,6 +64,12 @@ int main(void)
 
         /* Temp variables for the sscanf calls below */
         double t, this;
+        struct mod_eta eta;
+
+        if (!strcmp(linebuf, "MANUAL\n") && !level_count) {
+            manual = 1;
+            continue;
+        }
 
         if (sscanf(linebuf, "%lf " MOD_TIME_UNIT " EV %lf " MOD_DRUG_UNIT "/" MOD_TIME_UNIT "%1[\n]", &t, &this, discard) == 3) {
             APPEND(ev_list, ev_count, ((struct event){.t=t, .rate=this}));
@@ -77,14 +83,14 @@ int main(void)
             continue;
         }
 
-        if (sscanf(linebuf, "%lf " MOD_TIME_UNIT " LEVEL %lf " MOD_OB_UNIT "%1[\n]", &t, &this, discard) == 3 && !user_supplied_eta) {
+        if (sscanf(linebuf, "%lf " MOD_TIME_UNIT " LEVEL %lf " MOD_OB_UNIT "%1[\n]", &t, &this, discard) == 3 && !manual && !eta_count) {
             APPEND(level_times, level_count, t);
             APPEND(level_list, level_count, this);
             level_count++;
             continue;
         }
 
-        if(!level_count && ETA_LEN + 1 == sscanf(linebuf, "ETA "
+        if(manual && !level_count && ETA_LEN + 1 == sscanf(linebuf, "ETA "
 
 /* Description of this technique: https://en.wikipedia.org/wiki/X_Macro */
 #define X(idx, dep, indep) " %lf"
@@ -99,7 +105,8 @@ MOD_X_THETA
 /* The next parens close the sscanf and the if */
 
         discard)) {
-            user_supplied_eta = 1;
+            APPEND(eta_list, eta_count, eta);
+            eta_count++;
             continue;
         }
 
@@ -107,11 +114,11 @@ MOD_X_THETA
 MOD_X_PARAMS
 #undef X
 
-        if (sscanf(linebuf, "TRY %zu%1[\n]", &max_try, discard) == 2) {
+        if (sscanf(linebuf, "TRY %zu%1[\n]", &max_try, discard) == 2 && !manual && !eta_count) {
             continue;
         }
 
-        if (sscanf(linebuf, "MAX %zu%1[\n]", &max_win, discard) == 2) {
+        if (sscanf(linebuf, "MAX %zu%1[\n]", &max_win, discard) == 2 && !manual && !eta_count) {
             continue;
         }
 
@@ -127,19 +134,22 @@ MOD_X_PARAMS
         printf("%lf %s EV %lf %s\n", ev_list[i].t, MOD_TIME_UNIT, ev_list[i].rate, MOD_DRUG_UNIT "/" MOD_TIME_UNIT);
     }
 
-    for (size_t i = 0; i < level_count; i++) {
-        printf("%lf %s LEVEL %lf %s\n", level_times[i], MOD_TIME_UNIT, level_list[i], MOD_OB_UNIT);
+    for (size_t i = 0; i < get_count; i++) {
+        printf("%lf %s GET\n", get_times[i], MOD_TIME_UNIT);
     }
 
+    printf("MANUAL\n");
     printf("\n");
 
     /* Subsequent output is chunked per-eta */
-    if (user_supplied_eta) {
-        struct sol_params s_params = mod_theta(m_params, eta);
+    if (manual) {
+        for (size_t i = 0; i < eta_count; i++) {
+            struct sol_params s_params = mod_theta(m_params, eta_list[i]);
 
-        print_eta(eta);
-        sim_and_print(s_params, ev_list, ev_count, get_times, get_count);
-        printf("\n");
+            print_eta(eta_list[i]);
+            sim_and_print(s_params, ev_list, ev_count, get_times, get_count);
+            printf("\n");
+        }
     } else {
         /* Population of estimated etas */
         /* Limit attempts, to prevent computation from taking an arbitrary time */
@@ -148,6 +158,7 @@ MOD_X_PARAMS
             try_cnt++;
 
             /* Select an eta vector to accept or reject */
+            struct mod_eta eta;
             const double omega[] = {MOD_OMEGA};
             mvnorm(omega, eta.vector, ETA_LEN);
             struct sol_params s_params = mod_theta(m_params, eta);
