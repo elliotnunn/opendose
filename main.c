@@ -8,12 +8,13 @@
 
 #define APPEND(array, size, el) {array = realloc(array, (size + 1) * sizeof(*array)); array[size] = el;}
 #define ETA_LEN (sizeof (struct mod_eta){0}.vector / sizeof (struct mod_eta){0}.vector[0])
+#define FLOAT_OUT_FMT "%.17g"
 
 void print_eta(struct mod_eta eta)
 {
     printf("ETA");
     for (size_t i = 0; i < ETA_LEN; i++) {
-        printf(" %lf", eta.vector[i]);
+        printf(" " FLOAT_OUT_FMT, eta.vector[i]);
     }
     printf("\n");
 }
@@ -24,7 +25,7 @@ void sim_and_print(struct sol_params s_params, struct event *ev_list, size_t ev_
 
     for (size_t i = 0; i < get_count; i++) {
         double observation = mod_observe(s_params, sim[i]);
-        printf("# %lf " MOD_TIME_UNIT " %lf " MOD_OB_UNIT "\n", get_times[i], observation);
+        printf("# " FLOAT_OUT_FMT " " MOD_TIME_UNIT " " FLOAT_OUT_FMT " " MOD_OB_UNIT "\n", get_times[i], observation);
     }
 
     free(sim);
@@ -126,16 +127,16 @@ MOD_X_PARAMS
     } /* end of per-line loop */
 
     /* The first chunk must be a header */
-#define X(vname, human, unit) printf("PARAM %s %lf %s\n", human, m_params.vname, unit);
+#define X(vname, human, unit) printf("PARAM %s " FLOAT_OUT_FMT " %s\n", human, m_params.vname, unit);
 MOD_X_PARAMS
 #undef X
 
     for (size_t i = 0; i < ev_count; i++) {
-        printf("%lf %s EV %lf %s\n", ev_list[i].t, MOD_TIME_UNIT, ev_list[i].rate, MOD_DRUG_UNIT "/" MOD_TIME_UNIT);
+        printf(FLOAT_OUT_FMT " %s EV " FLOAT_OUT_FMT " %s\n", ev_list[i].t, MOD_TIME_UNIT, ev_list[i].rate, MOD_DRUG_UNIT "/" MOD_TIME_UNIT);
     }
 
     for (size_t i = 0; i < get_count; i++) {
-        printf("%lf %s GET\n", get_times[i], MOD_TIME_UNIT);
+        printf(FLOAT_OUT_FMT " %s GET\n", get_times[i], MOD_TIME_UNIT);
     }
 
     printf("MANUAL\n");
