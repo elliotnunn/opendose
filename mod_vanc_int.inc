@@ -32,10 +32,10 @@ struct mod_params {
 
 /* The between-subjects variation of this model */
 #define MOD_OMEGA \
-    0.0729, 0.0,    0.0,    0.0, \
-    0.0,    0.0225, 0.0,    0.0, \
-    0.0,    0.0,    1.69,   0.0, \
-    0.0,    0.0,    0.0,    0.2401
+    X(0.0729, 0.0,    0.0,    0.0) \
+    X(0.0,    0.0225, 0.0,    0.0) \
+    X(0.0,    0.0,    1.69,   0.0) \
+    X(0.0,    0.0,    0.0,    0.2401)
 
 /* An individual sample from that variation */
 struct mod_eta {

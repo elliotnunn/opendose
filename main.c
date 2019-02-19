@@ -160,7 +160,9 @@ MOD_X_PARAMS
 
             /* Select an eta vector to accept or reject */
             struct mod_eta eta;
+#define X(...) __VA_ARGS__,
             const double omega[] = {MOD_OMEGA};
+#undef X
             mvnorm(omega, eta.vector, ETA_LEN);
             struct sol_params s_params = mod_theta(m_params, eta);
 
