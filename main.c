@@ -33,6 +33,9 @@ void sim_and_print(struct sol_params s_params, struct event *ev_list, size_t ev_
 
 int main(void)
 {
+    /* One of these per run */
+    struct prng64_state prng = new_prng64();
+
     /* Immutable parameters of the model (PARAM directives) */
     struct mod_params m_params = {0};
 
@@ -163,7 +166,7 @@ MOD_X_PARAMS
 #define X(...) __VA_ARGS__,
             const double omega[] = {MOD_OMEGA};
 #undef X
-            mvnorm(omega, eta.vector, ETA_LEN);
+            mvnorm(&prng, omega, eta.vector, ETA_LEN);
             struct sol_params s_params = mod_theta(m_params, eta);
 
             /* Check only the time points where LEVEL directives are supplied */
@@ -177,7 +180,7 @@ MOD_X_PARAMS
             free(level_sim);
 
             /* If the likelihood exceeds a random threshold, accept this eta vector */
-            if (exp(logpdf) >= (double)prng64() / (double)UINT64_MAX) {
+            if (exp(logpdf) >= (double)prng64(&prng) / (double)UINT64_MAX) {
                 win_cnt++;
 
                 print_eta(eta);

@@ -9,12 +9,12 @@
 
 /* Draw a single number from the standard normal distribution */
 /* Marsaglia algorithm */
-double norm()
+double norm(struct prng64_state *prng)
 {
     double x, y, rsq, f;
     do {
-        x = 2.0 * prng64() / (double)UINT64_MAX - 1.0;
-        y = 2.0 * prng64() / (double)UINT64_MAX - 1.0;
+        x = 2.0 * prng64(prng) / (double)UINT64_MAX - 1.0;
+        y = 2.0 * prng64(prng) / (double)UINT64_MAX - 1.0;
         rsq = x * x + y * y;
     } while(rsq >= 1. || rsq == 0.);
     f = sqrt(-2.0 * log(rsq) / rsq);
@@ -42,11 +42,11 @@ void cholesky(const double *A, double *L, size_t n)
         }
 }
 
-void mvnorm(const double *omega, double *ary, size_t dim)
+void mvnorm(struct prng64_state *prng, const double *omega, double *ary, size_t dim)
 {
     /* Initially, a vector of samples from the standard normal */
     for (size_t i = 0; i < dim; i++) {
-        ary[i] = norm();
+        ary[i] = norm(prng);
     }
 
     /* Take the Cholesky transform of omega (please compiler please partial) */
