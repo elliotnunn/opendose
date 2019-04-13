@@ -126,7 +126,7 @@ MOD_X_PARAMS
             continue;
         }
 
-        printf("Error: %zu: %s", linectr, linebuf); exit(1);
+        printf("Error: %zu: %s\n", linectr, linebuf); exit(1);
     } /* end of per-line loop */
 
     /* The first chunk must be a header */
