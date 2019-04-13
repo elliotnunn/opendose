@@ -1,0 +1,4 @@
+# Non-dotfiles in root are build results
+/*
+!/*/
+!/.*

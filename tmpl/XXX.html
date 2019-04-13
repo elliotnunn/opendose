@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<title>OD: <DESTRING>MOD_DRUG</DESTRING></title>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="XXX.ui.js"></script>
+
+<nav class="navbar">
+  <a class="navbar-brand" href="#">Open Dose: <DESTRING>MOD_DRUG</DESTRING></a>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-5 OD-editable">
+      <h3>
+        History
+        <button class="btn btn-sm btn-secondary OD-noteditmode" onclick="OD_enter_editmode(this, 'validator')">Edit History</button>
+        <button class="btn btn-sm btn-primary OD-editmode" onclick="OD_new_dose(this)" disabled>Add Bolus</button>
+        <button class="btn btn-sm btn-primary OD-editmode" onclick="OD_new_level(this)" disabled>Add Level</button>
+        <button class="btn btn-sm btn-success OD-editmode" onclick="OD_exit_editmode(this, 1); scrape();" disabled>Done</button>
+      </h2>
+      <div class="list-group OD-appendtome">
+        <div class="list-group-item"><form class="form-inline">
+          #define X(A,B,C) <div class="input-group input-group-sm mx-1"><div class="input-group-prepend"><span class="input-group-text"><DESTRING>B</DESTRING></span></div><input type="text" class="form-control OD-input-covariate" size="4" value="100" readonly></input><div class="input-group-append"><span class="input-group-text"><DESTRING>C</DESTRING></span></div></div>
+          MOD_X_PARAMS
+          #undef X
+        </form></div>
+      </div>
+    </div>
+
+    <div class="col-7">
+      <section id="readout">
+        <svg id="plot" width="800" height="400" viewbox="0 -30 72 30">
+        </svg>
+      </section>
+    </div>
+  </div>
+</div>
