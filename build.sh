@@ -12,5 +12,6 @@ for mod in mod_*.inc; do
 	inputfiles="-include $mod main.c"
 
 	gcc -o bin/$base $CCOPTS $inputfiles
+	emcc -o bin/$base.js $CCOPTS $inputfiles
 	gcc -dM -E -o /dev/stdout $CCOPTS $inputfiles | grep '^#define \(MOD\|SOL\)_' > macros/$base.h
 done
