@@ -20,7 +20,7 @@
       </h2>
       <div class="list-group OD-appendtome">
         <div class="list-group-item"><form class="form-inline">
-          #define X(A,B,C) <div class="input-group input-group-sm mx-1"><div class="input-group-prepend"><span class="input-group-text"><DESTRING>B</DESTRING></span></div><input type="text" class="form-control OD-input-covariate" size="4" value="100" readonly></input><div class="input-group-append"><span class="input-group-text"><DESTRING>C</DESTRING></span></div></div>
+          #define X(short,long,unit) <div class="input-group input-group-sm mx-1"><div class="input-group-prepend"><span class="input-group-text"><DESTRING>long</DESTRING></span></div><input type="text" class="form-control OD-input-covariate" id=<DOSTRING>short</DOSTRING> size="4" value="100" readonly></input><div class="input-group-append"><span class="input-group-text"><DESTRING>unit</DESTRING></span></div></div>
           MOD_X_PARAMS
           #undef X
         </form></div>

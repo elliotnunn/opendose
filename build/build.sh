@@ -19,7 +19,7 @@ for engine in $engines; do
 
 	for xxx in *XXX*; do
 		yyy=`echo $xxx | sed s/XXX/$engine/`
-		cpp -include $engine.h -I. -P -C $xxx - | sed 's!<DESTRING>"\([^"]*\)"</DESTRING>!\1!g' | sed s/XXX/$engine/g > $yyy
+		cpp -include $engine.h -I. -P -C $xxx - | sed 's!<DESTRING>"\([^"]*\)"</DESTRING>!\1!g' | sed 's!<DOSTRING>!"!g' | sed 's!</DOSTRING>!"!g' | sed s/XXX/$engine/g > $yyy
 	done
 done
 

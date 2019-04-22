@@ -27,9 +27,11 @@ function scrape()
   ary.push("TRY 10000000");
 
   /* Marshal covariates (this must be made generic) */
-  var covars = document.querySelectorAll(".OD-input-covariate");
-  ary.push("PARAM creatinine clearance " + covars[0].value + " mL/min");
-  ary.push("PARAM total body weight " + covars[1].value + " kg");
+//  var covars = document.querySelectorAll(".OD-input-covariate"); n = 0;
+
+  #define X(short, long, unit) ary.push("PARAM " + long + " " + document.getElementById(<DOSTRING>short</DOSTRING>).value + " " + unit);
+  MOD_X_PARAMS
+  #undef X
 
   var maxTime = 0; /* How far out to take our graph */
 
