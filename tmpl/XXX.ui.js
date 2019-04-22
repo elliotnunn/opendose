@@ -26,9 +26,7 @@ function scrape()
   ary.push("MAX 50");
   ary.push("TRY 10000000");
 
-  /* Marshal covariates (this must be made generic) */
-//  var covars = document.querySelectorAll(".OD-input-covariate"); n = 0;
-
+  /* Marshal covariates */
   #define X(short, long, unit) ary.push("PARAM " + long + " " + document.getElementById(<DOSTRING>short</DOSTRING>).value + " " + unit);
   MOD_X_PARAMS
   #undef X
