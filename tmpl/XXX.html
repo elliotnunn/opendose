@@ -20,12 +20,11 @@
     <div class="col-12 col-lg-4 OD-editable">
       <h3>
         History
-        <button class="btn btn-sm btn-secondary OD-noteditmode" onclick="OD_enter_editmode(this, 'validator')">Edit History</button>
+        <button class="btn btn-sm btn-success OD-editmode" id="dirty-btn" onclick="OD_exit_dirtymode(); seriousMainThingDoer();" hidden>Try These Changes</button>
       </h2>
       <div>
-        <button class="btn btn-sm btn-primary OD-editmode" onclick="OD_new_dose(this)" disabled>Add Bolus</button>
-        <button class="btn btn-sm btn-primary OD-editmode" onclick="OD_new_level(this)" disabled>Add Level</button>
-        <button class="btn btn-sm btn-success OD-editmode" onclick="OD_exit_editmode(this, 1); seriousMainThingDoer();" disabled>Done</button>
+        <button class="btn btn-sm btn-primary" onclick="OD_enter_dirtymode(); OD_new_dose(this)">Add Bolus</button>
+        <button class="btn btn-sm btn-primary" onclick="OD_enter_dirtymode(); OD_new_level(this)">Add Level</button>
       </div>
       <div class="list-group OD-appendtome">
         <div class="list-group-item"><form class="form-inline">
@@ -35,7 +34,7 @@
               <div class="input-group-prepend"> \
                 <span class="input-group-text"><DESTRING>long</DESTRING></span> \
               </div> \
-              <input type="text" class="form-control OD-input-covariate" id=<DOSTRING>short</DOSTRING> size="4" value="100" readonly></input> \
+              <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-covariate" id=<DOSTRING>short</DOSTRING> size="4" value="100"></input> \
               <div class="input-group-append"> \
                 <span class="input-group-text"><DESTRING>unit</DESTRING></span> \
               </div> \
