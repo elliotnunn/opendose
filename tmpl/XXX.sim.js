@@ -180,6 +180,12 @@ function updateUiProgress(scenario_array)
     for (var i = 0; i < scenario_array.length; i++) {
       calcDescriptiveStats(scenario_array[i]);
     }
+
+    var chart_control = mkChartControlObject(scenario_array);
+    var opts = {
+      showPoint: false
+    };
+    new Chartist.Line("#plot", chart_control, opts);
   }
 }
 
@@ -225,4 +231,25 @@ function calcDescriptiveStats(scenario)
   scenario.lconf = rip_index(10);
   scenario.median = rip_index(200);
   scenario.hconf = rip_index(390);
+}
+
+function mkChartControlObject(scenario_array)
+{
+  var obj = {
+    // labels: ['a', 'b', 'c'],
+    series: []
+  };
+
+  for (var i = 0; i < scenario_array.length; i++) {
+    obj.series.push(Array.from(scenario_array[i].lconf));
+    obj.series.push(Array.from(scenario_array[i].median));
+    obj.series.push(Array.from(scenario_array[i].hconf));
+    // obj.series.push([1,2,3]);
+  }
+
+  console.log(obj);
+
+  /* fill obj out a bit */
+
+  return obj;
 }
