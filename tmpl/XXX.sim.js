@@ -43,20 +43,6 @@ function parse_time(in_str)
   return parseFloat(in_str.substr(0, 2)) + parseFloat(in_str.substr(2, 4)) / 60;
 }
 
-function mkPath(x, y) {
-  var cmd = "M";
-  var accum = [];
-  for (var i = 0; i < x.length; i++) {
-    accum.push(cmd); cmd = "L";
-    accum.push(x[i].toString());
-    accum.push(100 - y[i].toString() * 100 / 50);
-  }
-  accum = accum.join(" ");
-  newEl = document.createElementNS('http://www.w3.org/2000/svg',"path");
-  newEl.setAttributeNS(null, "d", accum);
-  return newEl;
-}
-
 function divideDomIntoScenarios()
 {
   user_input_element = document.querySelector(".OD-editable");
