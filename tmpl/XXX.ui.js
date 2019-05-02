@@ -1,9 +1,5 @@
 // Code to edit the dosing history
 function OD_new_dose (caller) {
-  while (!caller.classList.contains("OD-editable")) caller = caller.parentElement;
-
-  caller = caller.querySelectorAll(".OD-appendtome")[0];
-
   html = 
     '<div class="list-group-item OD-inputline-dose"><form class="form-inline">' +
       '<div class="input-group input-group-sm mx-1">' +
@@ -33,14 +29,10 @@ function OD_new_dose (caller) {
       '</div>' +
     '</form></div>';
 
-  caller.insertAdjacentHTML("beforeend", html);
+  document.querySelector(".OD-insertbeforeme").insertAdjacentHTML("beforebegin", html);
 }
 
 function OD_new_level (caller) {
-  while (!caller.classList.contains("OD-editable")) caller = caller.parentElement;
-
-  caller = caller.querySelectorAll(".OD-appendtome")[0];
-
   html = 
     '<div class="list-group-item OD-inputline-level"><form class="form-inline">' +
       '<div class="input-group input-group-sm mx-1">' +
@@ -64,7 +56,7 @@ function OD_new_level (caller) {
       '</div>' +
     '</form></div>';
 
-  caller.insertAdjacentHTML("beforeend", html);
+  document.querySelector(".OD-insertbeforeme").insertAdjacentHTML("beforebegin", html);
 }
 
 function OD_enter_dirtymode(caller, validator) {
