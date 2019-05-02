@@ -224,9 +224,6 @@ function calcDescriptiveStats(scenario)
     return median;
   }
 
-  scenario.tTogether_etaApart = tTogether_etaApart
-  scenario.etaTogether_tApart = etaTogether_tApart
-  scenario.etaTogetherSorted_tApart = etaTogetherSorted_tApart
 
   scenario.lconf = rip_index(10);
   scenario.median = rip_index(200);
