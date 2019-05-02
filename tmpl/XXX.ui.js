@@ -7,7 +7,7 @@ function OD_new_dose (caller) {
       '</div>' +
       '<div class="input-group input-group-sm mx-1">' +
         '<div class="input-group-prepend">' +
-          '<span class="input-group-text">day/time</span>' +
+          '<span class="input-group-text">day</span>' +
         '</div>' + 
         '<input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-date" size="4" value="1"></input>' +
         '<input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-time" size="4" value="0000"></input>' +
@@ -40,7 +40,7 @@ function OD_new_level (caller) {
       '</div>' +
       '<div class="input-group input-group-sm mx-1">' +
         '<div class="input-group-prepend">' +
-          '<span class="input-group-text">day/time</span>' +
+          '<span class="input-group-text">day</span>' +
         '</div>' + 
         '<input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-date" size="4" value="1"></input>' +
         '<input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-time" size="4" value="0000"></input>' +
