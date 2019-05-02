@@ -24,7 +24,7 @@
       <div>
         <button class="btn btn-sm btn-primary OD-editmode" onclick="OD_new_dose(this)" disabled>Add Bolus</button>
         <button class="btn btn-sm btn-primary OD-editmode" onclick="OD_new_level(this)" disabled>Add Level</button>
-        <button class="btn btn-sm btn-success OD-editmode" onclick="OD_exit_editmode(this, 1); scrape();" disabled>Done</button>
+        <button class="btn btn-sm btn-success OD-editmode" onclick="OD_exit_editmode(this, 1); seriousMainThingDoer();" disabled>Done</button>
       </div>
       <div class="list-group OD-appendtome">
         <div class="list-group-item"><form class="form-inline">
@@ -44,6 +44,7 @@
           #undef X
         </form></div>
       </div>
+      <progress value="0" max="100" style="width: 100%"></progress>
     </div>
 
     <div class="col-12 col-lg-8">
