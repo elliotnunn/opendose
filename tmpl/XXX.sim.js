@@ -1,4 +1,4 @@
-kEnoughSims = 200;
+kEnoughSims = 401; /* make this an odd number for the median calculation */
 
 function seriousMainThingDoer()
 {
@@ -174,4 +174,55 @@ function updateUiProgress(scenario_array)
     progress_bar.value = sims_done;
     progress_bar.hidden = false;
   }
+
+  if (sims_done == sims_wanted) {
+    /* done! hooray! */
+    for (var i = 0; i < scenario_array.length; i++) {
+      calcDescriptiveStats(scenario_array[i]);
+    }
+  }
+}
+
+function calcDescriptiveStats(scenario)
+{
+  var num_eta = scenario.stdout.length - 1;
+  var num_t = scenario.stdout[1].length - 1;
+  var ary_len = num_eta * num_t;
+
+  /* flat array... */
+  var tTogether_etaApart = new Float64Array(ary_len);
+  var etaTogether_tApart = new Float64Array(ary_len);
+
+  for (var eta = 0; eta < num_eta; eta++) {
+    for (var t = 0; t < num_t; t++) {
+      var the_number = scenario.stdout[eta+1][t+1].split(" ")[3];
+      tTogether_etaApart[eta * num_t + t] = the_number;
+      etaTogether_tApart[t * num_eta + eta] = the_number;
+    }
+  }
+
+  var etaTogetherSorted_tApart = new Float64Array(ary_len);
+  for (var t = 0; t < num_t; t++) {
+    var base = t * num_eta;
+    var my_slice = etaTogether_tApart.slice(base, base + num_eta);
+    my_slice.sort();
+    etaTogetherSorted_tApart.set(my_slice, base);
+  }
+
+  function rip_index(x)
+  {
+    var median = new Float64Array(num_t);
+    for (var t = 0; t < num_t; t++) {
+      median[t] = etaTogetherSorted_tApart[t * num_eta + x];
+    }
+    return median;
+  }
+
+  scenario.tTogether_etaApart = tTogether_etaApart
+  scenario.etaTogether_tApart = etaTogether_tApart
+  scenario.etaTogetherSorted_tApart = etaTogetherSorted_tApart
+
+  scenario.lconf = rip_index(10);
+  scenario.median = rip_index(200);
+  scenario.hconf = rip_index(390);
 }
