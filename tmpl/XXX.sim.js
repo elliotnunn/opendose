@@ -168,8 +168,8 @@ function simScenario(scenario, callback)
 
 function updateUiProgress(scenario_array)
 {
+  var sims_wanted = kEnoughSims * scenario_array.length;
 
-  /* urgent: this needs a rewrite! */
   var sims_done = 0;
   for (var i = 0; i < scenario_array.length; i++) {
     if (typeof scenario_array[i].stdout != "undefined") {
@@ -177,7 +177,15 @@ function updateUiProgress(scenario_array)
     }
   }
 
-  var prog = document.querySelector("progress");
-  prog.max = kEnoughSims * scenario_array.length;
-  prog.value = sims_done;
+  var progress_bar = document.querySelector("progress");
+
+  if (sims_done == 0) {
+    progress_bar.hidden = true;
+  } else if (sims_done == sims_wanted) {
+    progress_bar.hidden = true;
+  } else {
+    progress_bar.max = sims_wanted;
+    progress_bar.value = sims_done;
+    progress_bar.hidden = false;
+  }
 }
