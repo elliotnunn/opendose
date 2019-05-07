@@ -186,6 +186,8 @@ function updateUiProgress(scenario_array)
       showPoint: false
     };
     new Chartist.Line("#plot", chart_control, opts);
+
+    console.log(verticalAxis(Math.max(...window.gScenarioArray[0].hconf)));
   }
 }
 
