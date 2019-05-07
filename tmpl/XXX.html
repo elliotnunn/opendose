@@ -7,6 +7,18 @@
 <script src="XXX.sim.js"></script>
 <script src="XXX.ui.js"></script>
 
+<script>
+  var lines = []; function c(l) {lines.push(l)}
+  c('Welcome to Open Dose.');
+  c('This is the <XXX> model of ' + MOD_DRUG + ', dosed in ' + MOD_DRUG_UNIT + ' and assayed in ' + MOD_OB_UNIT + '.');
+  c('Model population: ' + MOD_POPULATION);
+  c('Model citation: ' + MOD_REFERENCE);
+  c('Solution citation: ' + SOL_REFERENCE);
+  c('Window vars of interest: kEnoughSims');
+  c('Functions of interest: (none so far)');
+  console.log(lines.join('\n'));
+</script>
+
 <style>
 .row {
     flex-direction: row-reverse;
