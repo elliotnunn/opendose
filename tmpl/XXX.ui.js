@@ -3,7 +3,7 @@ function OD_new_dose (caller) {
   html = 
     '<div class="list-group-item OD-inputline-dose"><form class="form-inline">' +
       '<div class="input-group input-group-sm mx-1">' +
-        '<button class="btn btn-danger btn-sm OD-editmode" onclick="OD_enter_dirtymode(); this.parentNode.parentNode.parentNode.remove();">Del</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="OD_enter_dirtymode(); this.parentNode.parentNode.parentNode.remove();">Del</button>' +
       '</div>' +
       '<div class="input-group input-group-sm mx-1">' +
         '<div class="input-group-prepend">' +
@@ -36,7 +36,7 @@ function OD_new_level (caller) {
   html = 
     '<div class="list-group-item OD-inputline-level"><form class="form-inline">' +
       '<div class="input-group input-group-sm mx-1">' +
-        '<button class="btn btn-danger btn-sm OD-editmode" onclick="OD_enter_dirtymode(); this.parentNode.parentNode.parentNode.remove();">Del</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="OD_enter_dirtymode(); this.parentNode.parentNode.parentNode.remove();">Del</button>' +
       '</div>' +
       '<div class="input-group input-group-sm mx-1">' +
         '<div class="input-group-prepend">' +
@@ -60,9 +60,9 @@ function OD_new_level (caller) {
 }
 
 function OD_enter_dirtymode(caller, validator) {
-  document.querySelector("#dirty-btn").hidden = false;
+  document.querySelectorAll(".OD-dirtyvis").forEach(function (x) {x.hidden = false});
 }
 
 function OD_exit_dirtymode(caller, validator) {
-  document.querySelector("#dirty-btn").hidden = true;
+  document.querySelectorAll(".OD-dirtyvis").forEach(function (x) {x.hidden = true});
 }
