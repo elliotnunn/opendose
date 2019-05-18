@@ -65,4 +65,11 @@ function OD_enter_dirtymode(caller, validator) {
 
 function OD_exit_dirtymode(caller, validator) {
   document.querySelectorAll(".OD-dirtyvis").forEach(function (x) {x.hidden = true});
+
+  var durationel = document.querySelector(".OD-input-period")
+  document.querySelectorAll(".OD-input-date").forEach(function (x) {
+    if (parseInt(x.value) > parseInt(durationel.value)) {
+      durationel.value = x.value;
+    }
+  })
 }

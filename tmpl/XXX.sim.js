@@ -12,6 +12,12 @@ function seriousMainThingDoer()
     /* idempotent, do nothing */
   }
 
+  gX = new Float64Array(401);
+  var t = parseInt(document.querySelector(".OD-input-period").value) * 24;
+  for (var i = 0; i < gX.length; i++) {
+    gX[i] = t * i / (gX.length - 1);
+  }
+
   /* Load user input (quite involved) */
   var scenario_array = divideDomIntoScenarios(this); 
 
@@ -123,14 +129,9 @@ function parseDomScenario(dom)
     ary.push(t.toString() + " h LEVEL " + level.toString() + " " + MOD_OB_UNIT);
   }
 
-  var xWidth = Math.ceil(maxTime / 24 + 2) * 24;
-
-  /* How many time points would we like for our graph? */
-  var numPoints = 501;
-  for (var i = 0; i < numPoints; i++) {
-    var hour = xWidth / (numPoints - 1) * i;
-    ary.push(hour.toString() + " h GET");
-  }
+  gX.forEach(function (x) {
+    ary.push(x.toString() + " h GET");
+  })
 
   ary.push(""); // trailing newline needed
   query = ary.join("\n");
@@ -181,13 +182,18 @@ function updateUiProgress(scenario_array)
       calcDescriptiveStats(scenario_array[i]);
     }
 
-    var chart_control = mkChartControlObject(scenario_array);
-    var opts = {
-      showPoint: false
-    };
-    new Chartist.Line("#plot", chart_control, opts);
+    document.querySelectorAll(".ephem").forEach(function (el) {el.remove()});
 
-    console.log(verticalAxis(Math.max(...window.gScenarioArray[0].hconf)));
+    updateYAxis(Math.max(...window.gScenarioArray[0].hconf));
+    updateXAxis(parseFloat(document.querySelector(".OD-input-period").value) * 24);
+    
+    var colours = ["black", "red", "green", "blue", "orange", "purple"];
+
+    for (var i = 0; i < scenario_array.length; i++) {
+      var colour = colours[i % colours.length];
+      blatPath(colour, gX, scenario_array[i].median);
+      blatStreet(colour, gX, scenario_array[i].lconf, scenario_array[i].hconf);
+    }
   }
 }
 

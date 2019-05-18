@@ -31,6 +31,21 @@
   justify-content: center; // horizontally centers single line items
   text-align: center; // optional, but helps horizontally center text that breaks into multiple lines
 }
+
+.gridmark {
+  stroke: #888888;
+  stroke-width: 1;
+  fill: none;
+}
+
+.median {
+  stroke-width: 1;
+  fill: none;
+}
+
+.street {
+  opacity: 0.2;
+}
 </style>
 
 <nav class="navbar">
@@ -61,6 +76,17 @@
 
           MOD_X_PARAMS
           #undef X
+
+          <div class="input-group input-group-sm mx-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">sim</span>
+            </div>
+            <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-period" id="" size="4" value="1"></input>
+            <div class="input-group-append">
+              <span class="input-group-text">d</span>
+            </div>
+          </div>
+
         </form></div>
         <div class="list-group-item OD-insertbeforeme" style="text-align: right;">
           <button class="btn btn-sm btn-primary" onclick="OD_enter_dirtymode(); OD_new_dose(this)">Add Bolus</button>
@@ -72,8 +98,11 @@
     <div class="col-12 col-lg-8">
       <div id="expander" style="width: 100%; padding-top: 61.803398875%; position: relative;">
         <div id="container" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;">
-          <div id="plot" class="ct-chart ct-golden-section">
-          </div>
+          <svg id="plot" width="100%" height="100%" viewbox="0 0 162 100" style="background-color: #ffffff;" preserveAspectRatio="meet">
+            <g id="ticks" />
+            <rect class="plotarea" vector-effect="non-scaling-stroke" x="8" y="-8" width="200" height="100" style="fill: none; stroke: black; stroke-width: 1;" />
+            <g id="streets" /><g id="lines" />
+          </svg>
           <progress value="0" max="100" style="position: absolute; top: 50%; left: 0%; width: 100%;" hidden></progress>
         </div>
       </div>
