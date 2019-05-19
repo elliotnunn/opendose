@@ -49,7 +49,7 @@
 </style>
 
 <template id="dose">
-  <div class="list-group-item OD-inputline-dose"><form class="form-inline">
+  <div class="list-group-item OD-inputline-dose">
     <div class="input-group input-group-sm mx-1">
       <button class="btn btn-danger btn-sm" onclick="OD_enter_dirtymode(); this.parentNode.parentNode.parentNode.remove();">Del</button>
     </div>
@@ -75,11 +75,11 @@
         <span class="input-group-text"><DESTRING>MOD_TIME_UNIT</DESTRING></span>
       </div> 
     </div>
-  </form></div>
+  </div>
 </template>
 
 <template id="level">
-  <div class="list-group-item OD-inputline-level"><form class="form-inline">
+  <div class="list-group-item OD-inputline-level">
     <div class="input-group input-group-sm mx-1">
       <button class="btn btn-danger btn-sm" onclick="OD_enter_dirtymode(); this.parentNode.parentNode.parentNode.remove();">Del</button>
     </div>
@@ -99,7 +99,7 @@
         <span class="input-group-text"><DESTRING>MOD_OB_UNIT</DESTRING></span>
       </div> 
     </div>
-  </form></div>
+  </div>
 </template>
 
 <nav class="navbar">
@@ -108,13 +108,13 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-12 col-lg-4 OD-editable">
+    <div class="col-12 col-lg-4 OD-editable"><form class="form-inline" action="javascript:void(0);">
       <h3>
         History
-        <button class="btn btn-sm btn-success OD-dirtyvis" id="dirty-btn" onclick="OD_exit_dirtymode(); seriousMainThingDoer();" hidden>Try These Changes</button>
+        <button class="btn btn-sm btn-success OD-dirtyvis" id="dirty-btn" onclick="OD_exit_dirtymode(); seriousMainThingDoer();" type="submit" hidden>Try These Changes</button>
       </h2>
       <div class="list-group OD-appendtome">
-        <div class="list-group-item"><form class="form-inline">
+        <div class="list-group-item">
 
           #define X(short,long,unit) \
             <div class="input-group input-group-sm mx-1"> \
@@ -140,13 +140,13 @@
             </div>
           </div>
 
-        </form></div>
+        </div>
         <div class="list-group-item OD-insertbeforeme" style="text-align: right;">
           <button class="btn btn-sm btn-primary" onclick="OD_enter_dirtymode(); OD_new_dose(this)">Add Bolus</button>
           <button class="btn btn-sm btn-primary" onclick="OD_enter_dirtymode(); OD_new_level(this)">Add Level</button>
         </div>
       </div>
-    </div>
+    </form></div>
 
     <div class="col-12 col-lg-8">
       <div id="expander" style="width: 100%; padding-top: 61.803398875%; position: relative;">
