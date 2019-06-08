@@ -19,15 +19,25 @@ function OD_exit_dirtymode(caller, validator) {
 }
 
 function OD_key(event) {
-  if (event.code == 'Backspace' &&
-    event.type == 'keyup' && /* prevents key-repeat from clobbering the hx */
-    event.target.selectionStart == 0 && /* already backspaced to start of field */
-    document.querySelectorAll('section.history tr').length > 2) /* not deleting the last one */
-  {
-    var del_targ = event.target.parentNode.parentNode;
-    var to_focus = del_targ.nextElementSibling || del_targ.previousElementSibling;
-    del_targ.remove();
-    to_focus.querySelector('input').focus();
+  /* This state machine only deletes rows when user backspaces at position zero */
+  if (event.code == 'Backspace') {
+    event.target.OD_state = event.target.OD_state || 0;
+
+    if (event.type == 'keydown' && !event.target.OD_state) {
+      var is_txt_del = event.target.selectionEnd > 0;
+      event.target.OD_state = is_txt_del ? 1 : 2;
+    }
+
+    if (event.type == 'keyup') {
+      if (event.target.OD_state == 2 && document.querySelectorAll('section.history tr').length > 2) {
+        var del_targ = event.target.parentNode.parentNode;
+        var to_focus = del_targ.nextElementSibling || del_targ.previousElementSibling;
+        del_targ.remove();
+        to_focus.querySelector('input').focus();
+      }
+
+      event.target.OD_state = 0;
+    }
   }
 
   if (event.code == 'Enter' && event.type == 'keyup') {
