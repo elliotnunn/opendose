@@ -13,7 +13,7 @@ function seriousMainThingDoer()
   }
 
   gX = new Float64Array(401);
-  var t = parseInt(document.querySelector(".OD-input-period").value) * 24;
+  var t = parseInt(document.querySelector("#OD-duration").value) * 24;
   for (var i = 0; i < gX.length; i++) {
     gX[i] = t * i / (gX.length - 1);
   }
@@ -51,7 +51,7 @@ function parse_time(in_str)
 
 function divideDomIntoScenarios()
 {
-  user_input_element = document.querySelector(".OD-editable");
+  user_input_element = document;
 
   var N = 1;
 
@@ -102,31 +102,37 @@ function parseDomScenario(dom)
   #undef X
 
   var maxTime = 0; /* How far out to take our graph */
+  var orderChecker = 0;
 
-  /* Marshal doses (this format will change) */
-  var lines = dom.querySelectorAll(".OD-inputline-dose");
-  for (var i = 0; i < lines.length; i++) {
-    function X(cls) {return lines[i].getElementsByClassName(cls)[0].value;}
+  var rows = dom.querySelectorAll("section.history tr");
+  for (var i = 1; i < rows.length; i++) {
+    var cols = rows[i].querySelectorAll("input"); /* day time level dose */
 
-    var t = (X("OD-input-date") - 1) * 24 + parse_time(X("OD-input-time"));
+    if (cols[0].value == '.' || cols[1].value == '.') continue;
+
+    var t = (cols[0].value - 1) * 24 + parse_time(cols[1].value);
+    if (t < orderChecker) {
+      alert('History lines not in order');
+      throw false;
+    }
+    orderChecker = t;
+
     maxTime = Math.max(maxTime, t);
-    var dur = parseFloat(X("OD-input-dosepush"));
-    var rate = parseFloat(X("OD-input-dose")) / dur;
 
-    ary.push(t.toString() + " h EV " + rate.toString() + " " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
-    ary.push((t+dur).toString() + " h EV 0 " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
-  }
+    if (cols[2].value != '' && cols[2].value != '.') {
+      ary.push(t.toString() + " h LEVEL " + cols[2].value + " " + MOD_OB_UNIT);
+    }
 
-  /* Marshal levels */
-  var lines = dom.querySelectorAll(".OD-inputline-level");
-  for (var i = 0; i < lines.length; i++) {
-    function X(cls) {return lines[i].getElementsByClassName(cls)[0].value;}
+    if (cols[3].value != '' && cols[3].value != '.') {
+      var dur = 1; /* everything pushed over one hour for now */
+      var rate = cols[3].value / dur;
 
-    var t = (X("OD-input-date") - 1) * 24 + parse_time(X("OD-input-time"));
-    maxTime = Math.max(maxTime, t);
-    var level = parseFloat(X("OD-input-level"));
+      ary.push(t.toString() + " h EV " + rate.toString() + " " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
+      ary.push((t+dur).toString() + " h EV 0 " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
 
-    ary.push(t.toString() + " h LEVEL " + level.toString() + " " + MOD_OB_UNIT);
+      maxTime = Math.max(maxTime, t+dur);
+      orderChecker = t+dur;
+    }
   }
 
   gX.forEach(function (x) {
@@ -164,16 +170,14 @@ function updateUiProgress(scenario_array)
     }
   }
 
-  var progress_bar = document.querySelector("progress");
 
-  if (sims_done == 0) {
-    progress_bar.hidden = true;
-  } else if (sims_done == sims_wanted) {
-    progress_bar.hidden = true;
+  var progress_bar = document.querySelector("#do-it");
+
+  if (sims_done == 0 || sims_done == sims_wanted) {
+    progress_bar.innerHTML = progress_bar.innerHTML.split(' ')[0];
   } else {
-    progress_bar.max = sims_wanted;
-    progress_bar.value = sims_done;
-    progress_bar.hidden = false;
+    var rounded = Math.floor(10 * sims_done / sims_wanted) * 10;
+    progress_bar.innerHTML = progress_bar.innerHTML.split(' ')[0] + ' (' + rounded + '%)';
   }
 
   if (sims_done == sims_wanted) {
@@ -185,7 +189,7 @@ function updateUiProgress(scenario_array)
     document.querySelectorAll(".ephem").forEach(function (el) {el.remove()});
 
     updateYAxis(Math.max(...window.gScenarioArray[0].hconf));
-    updateXAxis(parseFloat(document.querySelector(".OD-input-period").value) * 24);
+    updateXAxis(parseFloat(document.querySelector("#OD-duration").value) * 24);
     
     var colours = ["black", "red", "green", "blue", "orange", "purple"];
 
@@ -199,6 +203,7 @@ function updateUiProgress(scenario_array)
 
 function calcDescriptiveStats(scenario)
 {
+  console.log(scenario.stdout);
   var num_eta = scenario.stdout.length - 1;
   var num_t = scenario.stdout[1].length - 1;
   var ary_len = num_eta * num_t;

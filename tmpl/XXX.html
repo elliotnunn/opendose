@@ -2,6 +2,7 @@
 <title>OD/<DESTRING>MOD_DRUG</DESTRING></title>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="XXX.css">
 <script src="XXX.sim.js"></script>
 <script src="XXX.ui.js"></script>
 <script src="XXX.graph.js"></script>
@@ -18,123 +19,22 @@
   console.log(lines.join('\n'));
 </script>
 
-<style>
-/* Styles required for overall page layout */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-body {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-}
-header {
-  display: flex;
-  padding: 12px 16px;
-  border-bottom: 1px solid gray;
-  background: rgb(36, 41, 46);
-}
-.app {
-  flex: 1 0;
-  flex-grow: 1;
-  display: flex;
-}
-.output-area {
-  flex-grow: 1;
-}
-</style>
 
 <style>
-/* Semantics within the page (non-interactive) */
-header h1 {
-  text-transform: uppercase;
-  white-space: nowrap;
-  font-size: 36px;
-  color: white;
-}
-header h2 {
-  font-size: 12px;
-  margin-top: 7px;
-  margin-left: 20px;
-  color: #DDDDDD;
-}
-</style>
-
-<style>
-/* For the sidebar doodad */
-aside {
-  display: flex;
-  background-color: rgb(246, 248, 250);
-  flex-direction: column;
-  width: 300px;
-  border-right: 1px solid gray;
-  font-size: 14px;
-}
-aside section {
-  border-bottom: 1px solid gray;
-}
-/*aside section:last-child {
-  border-bottom: 0;
-}*/
-
-
-
-section.controls {
-  padding: 8px;
-  text-align: center;
-}
-section.controls button {
-  width: 100%;
+/* THe SVG! */
+.gridmark {
+  stroke: #888888;
+  stroke-width: 1;
+  fill: none;
 }
 
-section.covariates {
-  padding: 8px;
-}
-section.covariates .covariate {
-  padding-bottom: 6px;
-  display: flex;
-  justify-content: space-between;
-
-}
-section.covariates .covariate:last-child {
-  padding-bottom: 0px;
-}
-section.covariates .covar-name {
-  text-transform: capitalize;
-}
-section.covariates input {
-  text-align: right;
+.median {
+  stroke-width: 1;
+  fill: none;
 }
 
-section.history {
-}
-section.history table, section.history tr, section.history th, section.history td {
-  font-weight: normal;
-  margin: 0;
-  border: 0;
-  padding: 0;
-}
-section.history table {
-  width: 100%;
-  table-layout: fixed;
-  text-align: right;
-}
-section.history tr:nth-child(even) {
-  background-color: #DDD;
-}
-section.history th {
-  padding: 6px 0;
-}
-section.history input {
-  width: 100%;
-  text-align: right;
-  border: 0;
-  background: none;
-}
-section.history input:focus {
-  outline: none;
+.street {
+  opacity: 0.2;
 }
 </style>
 
@@ -151,17 +51,20 @@ section.history input:focus {
 
 <header>
   <h1><DESTRING>MOD_DRUG</DESTRING></h1>
-  <h2><DESTRING>MOD_REFERENCE</DESTRING></h2>
+  <p><DESTRING>MOD_REFERENCE</DESTRING></p>
 </header>
 
 <div class="app">
   <aside>
     <section class="controls">
-      <button type="button" class="btn btn-outline-dark" onclick="OD_exit_dirtymode(); OD_newline();">Simulate</button>
+      <button type="button" id="do-it" class="btn btn-outline-dark" onclick="seriousMainThingDoer();">Simulate</button>
+      <div class="setting">
+        <label for="OD-duration">Duration (days)</label><input type="text" id="OD-duration" size="6" value="1">
+      </div>
     </section>
     <section class="covariates">
       #define X(machine_name, human_name_str, unit_str) \
-        <div class="covariate"> \
+        <div class="setting"> \
           <label for=machine_name><span class="covar-name"><DESTRING>human_name_str</DESTRING></span> (<DESTRING>unit_str</DESTRING>)</label> \
           <input type="text" id=machine_name size="6"> \
         </div>
@@ -170,13 +73,33 @@ section.history input:focus {
     </section>
     <section class="history">
       <table>
-        <tr><th style="width:6px"></th><th>Day</th><th>Time</th><th>Level</th><th>Dose</th><th style="width:6px"></th></tr>
+        <tr>
+          <th style="width:6px"></th>
+          <th class="temporal">Day</th>
+          <th class="temporal">Time</th>
+          <th>Level<!-- (<DESTRING>MOD_OB_UNIT</DESTRING>)--></th>
+          <th>Dose (<DESTRING>MOD_DRUG_UNIT</DESTRING>)</th>
+          <th style="width:6px"></th>
+        </tr>
       </table>
     </section>
   </aside>
-  <div class="output-area">
-    This is the output area. It had better improve drastically, and soon!
-  </div>
+  <main>
+    <section class="graph" style="width:600px">
+      <h2>Predicted <DESTRING>MOD_DRUG</DESTRING> concentration (<DESTRING>MOD_OB_UNIT</DESTRING>)</h2>
+      <div id="expander" style="width: 100%; padding-top: 61.803398875%; position: relative;">
+        <div id="container" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;">
+          <svg id="plot" width="100%" height="100%" viewbox="0 0 162 100" style="background-color: #ffffff;" preserveAspectRatio="meet">
+            <g id="ticks" />
+            <rect class="plotarea" vector-effect="non-scaling-stroke" x="8" y="-8" width="200" height="100" style="fill: none; stroke: black; stroke-width: 1;" />
+            <g id="streets" /><g id="lines" />
+          </svg>
+        </div>
+      </div>
+    </section>
+    <section class="report">
+    </section>
+  </main>
 </div>
 
 <script>
