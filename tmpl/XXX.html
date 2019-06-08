@@ -2,8 +2,6 @@
 <title>OD/<DESTRING>MOD_DRUG</DESTRING></title>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-<script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
 <script src="XXX.sim.js"></script>
 <script src="XXX.ui.js"></script>
 <script src="XXX.graph.js"></script>
@@ -21,148 +19,169 @@
 </script>
 
 <style>
-.row {
-    flex-direction: row-reverse;
+/* Styles required for overall page layout */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
-
-.Absolute-Center {
-  display: flex; // make us of Flexbox
-  align-items: center; // does vertically center the desired content
-  justify-content: center; // horizontally centers single line items
-  text-align: center; // optional, but helps horizontally center text that breaks into multiple lines
+body {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
 }
-
-.gridmark {
-  stroke: #888888;
-  stroke-width: 1;
-  fill: none;
+header {
+  display: flex;
+  padding: 12px 16px;
+  border-bottom: 1px solid gray;
+  background: rgb(36, 41, 46);
 }
-
-.median {
-  stroke-width: 1;
-  fill: none;
+.app {
+  flex: 1 0;
+  flex-grow: 1;
+  display: flex;
 }
-
-.street {
-  opacity: 0.2;
+.output-area {
+  flex-grow: 1;
 }
 </style>
 
-<template id="dose">
-  <div class="list-group-item OD-inputline-dose">
-    <div class="input-group input-group-sm mx-1">
-      <button class="btn btn-danger btn-sm" onclick="OD_enter_dirtymode(); this.parentNode.parentNode.remove();">Del</button>
-    </div>
-    <div class="input-group input-group-sm mx-1">
-      <div class="input-group-prepend">
-        <span class="input-group-text">day</span>
-      </div> 
-      <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-date" size="4" value="1"></input>
-      <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-time" size="4" value="0000"></input>
-    </div>
-    <div class="input-group input-group-sm mx-1">
-      <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-dose" size="4" value="1000"></input>
-      <div class="input-group-append">
-        <span class="input-group-text"><DESTRING>MOD_DRUG_UNIT</DESTRING></span>
-      </div> 
-    </div>
-    <div class="input-group input-group-sm mx-1">
-      <div class="input-group-prepend">
-        <span class="input-group-text">given over</span>
-      </div> 
-      <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-dosepush" size="4" value="1"></input>
-      <div class="input-group-append">
-        <span class="input-group-text"><DESTRING>MOD_TIME_UNIT</DESTRING></span>
-      </div> 
-    </div>
-  </div>
+<style>
+/* Semantics within the page (non-interactive) */
+header h1 {
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-size: 36px;
+  color: white;
+}
+header h2 {
+  font-size: 12px;
+  margin-top: 7px;
+  margin-left: 20px;
+  color: #DDDDDD;
+}
+</style>
+
+<style>
+/* For the sidebar doodad */
+aside {
+  display: flex;
+  background-color: rgb(246, 248, 250);
+  flex-direction: column;
+  width: 300px;
+  border-right: 1px solid gray;
+  font-size: 14px;
+}
+aside section {
+  border-bottom: 1px solid gray;
+}
+/*aside section:last-child {
+  border-bottom: 0;
+}*/
+
+
+
+section.controls {
+  padding: 8px;
+  text-align: center;
+}
+section.controls button {
+  width: 100%;
+}
+
+section.covariates {
+  padding: 8px;
+}
+section.covariates .covariate {
+  padding-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+
+}
+section.covariates .covariate:last-child {
+  padding-bottom: 0px;
+}
+section.covariates .covar-name {
+  text-transform: capitalize;
+}
+section.covariates input {
+  text-align: right;
+}
+
+section.history {
+}
+section.history table, section.history tr, section.history th, section.history td {
+  font-weight: normal;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+section.history table {
+  width: 100%;
+  table-layout: fixed;
+  text-align: right;
+}
+section.history tr:nth-child(even) {
+  background-color: #DDD;
+}
+section.history th {
+  padding: 6px 0;
+}
+section.history input {
+  width: 100%;
+  text-align: right;
+  border: 0;
+  background: none;
+}
+section.history input:focus {
+  outline: none;
+}
+</style>
+
+<template id="newline">
+  <tr class="OD-inputline">
+    <td><!-- hack to ensure side padding -->
+    <td><input type="text" onkeydown="OD_key(event)" onkeyup="OD_key(event)">
+    <td><input type="text" onkeydown="OD_key(event)" onkeyup="OD_key(event)">
+    <td><input type="text" onkeydown="OD_key(event)" onkeyup="OD_key(event)">
+    <td><input type="text" onkeydown="OD_key(event)" onkeyup="OD_key(event)">
+    <td>
+  </tr>
 </template>
 
-<template id="level">
-  <div class="list-group-item OD-inputline-level">
-    <div class="input-group input-group-sm mx-1">
-      <button class="btn btn-danger btn-sm" onclick="OD_enter_dirtymode(); this.parentNode.parentNode.remove();">Del</button>
-    </div>
-    <div class="input-group input-group-sm mx-1">
-      <div class="input-group-prepend">
-        <span class="input-group-text">day</span>
-      </div> 
-      <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-date" size="4" value="1"></input>
-      <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-time" size="4" value="0000"></input>
-    </div>
-    <div class="input-group input-group-sm mx-1">
-      <div class="input-group-prepend">
-        <span class="input-group-text">TDM level</span>
-      </div> 
-      <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-level" size="3" value="0"></input>
-      <div class="input-group-append">
-        <span class="input-group-text"><DESTRING>MOD_OB_UNIT</DESTRING></span>
-      </div> 
-    </div>
-  </div>
-</template>
+<header>
+  <h1><DESTRING>MOD_DRUG</DESTRING></h1>
+  <h2><DESTRING>MOD_REFERENCE</DESTRING></h2>
+</header>
 
-<nav class="navbar">
-  <a class="navbar-brand" href="#">Open Dose: <DESTRING>MOD_DRUG</DESTRING></a>
-</nav>
-
-<div class="container">
-  <div class="row">
-    <div class="col-12 col-lg-4 OD-editable"><form class="form-inline" action="javascript:void(0);">
-      <h3>
-        History
-        <button class="btn btn-sm btn-success OD-dirtyvis" id="dirty-btn" onclick="OD_exit_dirtymode(); seriousMainThingDoer();" type="submit" hidden>Try These Changes</button>
-      </h2>
-      <div class="list-group OD-appendtome">
-        <div class="list-group-item">
-
-          #define X(short,long,unit) \
-            <div class="input-group input-group-sm mx-1"> \
-              <div class="input-group-prepend"> \
-                <span class="input-group-text"><DESTRING>long</DESTRING></span> \
-              </div> \
-              <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-covariate" id=<DOSTRING>short</DOSTRING> size="4" value="100"></input> \
-              <div class="input-group-append"> \
-                <span class="input-group-text"><DESTRING>unit</DESTRING></span> \
-              </div> \
-            </div>
-
-          MOD_X_PARAMS
-          #undef X
-
-          <div class="input-group input-group-sm mx-1">
-            <div class="input-group-prepend">
-              <span class="input-group-text">sim</span>
-            </div>
-            <input type="text" onclick="OD_enter_dirtymode();" class="form-control OD-input-period" id="" size="4" value="1"></input>
-            <div class="input-group-append">
-              <span class="input-group-text">d</span>
-            </div>
-          </div>
-
+<div class="app">
+  <aside>
+    <section class="controls">
+      <button type="button" class="btn btn-outline-dark" onclick="OD_exit_dirtymode(); OD_newline();">Simulate</button>
+    </section>
+    <section class="covariates">
+      #define X(machine_name, human_name_str, unit_str) \
+        <div class="covariate"> \
+          <label for=machine_name><span class="covar-name"><DESTRING>human_name_str</DESTRING></span> (<DESTRING>unit_str</DESTRING>)</label> \
+          <input type="text" id=machine_name size="6"> \
         </div>
-        <div class="list-group-item OD-insertbeforeme" style="text-align: right;">
-          <button class="btn btn-sm btn-primary" onclick="OD_enter_dirtymode(); OD_new_dose(this)">Add Bolus</button>
-          <button class="btn btn-sm btn-primary" onclick="OD_enter_dirtymode(); OD_new_level(this)">Add Level</button>
-        </div>
-      </div>
-    </form></div>
-
-    <div class="col-12 col-lg-8">
-      <div id="expander" style="width: 100%; padding-top: 61.803398875%; position: relative;">
-        <div id="container" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;">
-          <svg id="plot" width="100%" height="100%" viewbox="0 0 162 100" style="background-color: #ffffff;" preserveAspectRatio="meet">
-            <g id="ticks" />
-            <rect class="plotarea" vector-effect="non-scaling-stroke" x="8" y="-8" width="200" height="100" style="fill: none; stroke: black; stroke-width: 1;" />
-            <g id="streets" /><g id="lines" />
-          </svg>
-          <progress value="0" max="100" style="position: absolute; top: 50%; left: 0%; width: 100%;" hidden></progress>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12">
-      This is where the full-width readout goes.
-    </div>
+      MOD_X_PARAMS
+      #undef X
+    </section>
+    <section class="history">
+      <table>
+        <tr><th style="width:6px"></th><th>Day</th><th>Time</th><th>Level</th><th>Dose</th><th style="width:6px"></th></tr>
+      </table>
+    </section>
+  </aside>
+  <div class="output-area">
+    This is the output area. It had better improve drastically, and soon!
   </div>
 </div>
+
+<script>
+document.querySelector('section.history table').appendChild(cloneTmpl('#newline'));
+document.querySelectorAll('.OD-inputline input')[0].value = '1';
+document.querySelectorAll('.OD-inputline input')[1].value = '0000';
+document.querySelectorAll('.OD-inputline input')[3].value = '1500';
+</script>
