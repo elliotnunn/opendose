@@ -22,8 +22,9 @@ function seriousMainThingDoer()
   var scenario_array = divideDomIntoScenarios(this); 
 
   /* Do one-off input parsing for each calculated scenario */
+  /* Calculates stdin and level members */
   for (var i = 0; i < scenario_array.length; i++) {
-    scenario_array[i].stdin = parseDomScenario(scenario_array[i].dom);
+    parseDomScenario(scenario_array[i]);
   }
 
   /* Callback to update the ui progress bar */
@@ -87,8 +88,11 @@ function divideDomIntoScenarios()
   return big_array;
 }
 
-function parseDomScenario(dom)
+function parseDomScenario(scenario)
 {
+  var dom = scenario.dom;
+  scenario.levels = [];
+
   /* Marshal a bayes input file from the history */
   var ary = [];
 
@@ -121,6 +125,7 @@ function parseDomScenario(dom)
 
     if (cols[2].value != '' && cols[2].value != '.') {
       ary.push(t.toString() + " h LEVEL " + cols[2].value + " " + MOD_OB_UNIT);
+      scenario.levels.push([t, parseFloat(cols[2].value)]);
     }
 
     if (cols[3].value != '' && cols[3].value != '.') {
@@ -141,7 +146,7 @@ function parseDomScenario(dom)
 
   ary.push(""); // trailing newline needed
   query = ary.join("\n");
-  return query;
+  scenario.stdin = query;
 }
 
 function simScenario(scenario, callback)
@@ -197,6 +202,7 @@ function updateUiProgress(scenario_array)
       var colour = colours[i % colours.length];
       blatPath(colour, gX, scenario_array[i].median);
       blatStreet(colour, gX, scenario_array[i].lconf, scenario_array[i].hconf);
+      blatLevels(colour, scenario_array[i].levels);
     }
   }
 }

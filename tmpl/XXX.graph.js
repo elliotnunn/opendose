@@ -127,3 +127,20 @@ function blatStreet(colour, _x, y1, y2) {
 
   plot.querySelector("#streets").insertAdjacentElement("beforeend", el);
 }
+
+function blatLevels(colour, levels) {
+  var plot = document.querySelector("#plot");
+
+  for (var i = 0; i < levels.length; i++) {
+    var x = plot.odgXminpx + levels[i][0]*plot.odgXscale;
+    var y = plot.odgYminpx + levels[i][1]*plot.odgYscale;
+
+    var el = document.createElementNS('http://www.w3.org/2000/svg',"circle");
+    el.setAttributeNS(null, "cx", x);
+    el.setAttributeNS(null, "cy", y);
+    el.setAttributeNS(null, "r", 1);
+    el.setAttributeNS(null, "fill", colour);
+    el.setAttributeNS(null, "class", "level ephem");
+    plot.querySelector("#levels").insertAdjacentElement("beforeend", el);
+  }
+}
