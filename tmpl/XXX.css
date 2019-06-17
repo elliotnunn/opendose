@@ -61,6 +61,12 @@ section.controls button {
 }
 
 
+/* Sidebar component: pharmacodynamic controls (generated at page load time) */
+section.pharmacodynamics {
+  padding: 12px 8px;
+}
+
+
 /* Sidebar component: "medical" controls */
 section.covariates {
   padding: 12px 8px;

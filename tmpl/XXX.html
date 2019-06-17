@@ -62,6 +62,18 @@
         <label for="OD-duration">Duration (days)</label><input type="text" id="OD-duration" size="6" value="1">
       </div>
     </section>
+
+    <script type="text/javascript">
+      var the_drug = MOD_DRUG;
+      if (the_drug == "vancomycin") {
+        document.write('<section class="pharmacodynamics">');
+        document.write('<div class="setting">')
+        document.write('<label for="OD-pd">MIC (mg/L)</label><input type="text" id="OD-pd" size="6" value="">')
+        document.write('</div>');
+        document.write('</section>');
+      }
+    </script>
+
     <section class="covariates">
       #define X(machine_name, human_name_str, unit_str) \
         <div class="setting"> \
