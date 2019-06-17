@@ -119,7 +119,7 @@ function parseDomScenario(scenario)
   ary.push("TRY 10000000");
 
   /* Marshal covariates */
-  #define X(short, long, unit) ary.push("PARAM " + long + " " + dom.querySelector("#" + <DOSTRING>short</DOSTRING>).value + " " + unit);
+  #define X(short, long, unit) ary.push("PARAM " + long + " " + dom.querySelector("#" + <PUTQUOT>short<PUTQUOT>).value + " " + unit);
   MOD_X_PARAMS
   #undef X
 

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<title>OD/<DESTRING>MOD_DRUG</DESTRING></title>
+<title>OD/<DELQUOT>MOD_DRUG<DELQUOT></title>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="XXX.css">
 <script src="XXX.sim.js"></script>
 <script src="XXX.ui.js"></script>
 <script src="XXX.graph.js"></script>
+<script src=MOD_DRUG<DELQUOT>.pd.js"></script>
 
 <script>
   var lines = []; function c(l) {lines.push(l)}
@@ -50,8 +51,8 @@
 </template>
 
 <header>
-  <h1><DESTRING>MOD_DRUG</DESTRING></h1>
-  <p>Validated in <DESTRING>MOD_POPULATION</DESTRING> (see below)</p>
+  <h1><DELQUOT>MOD_DRUG<DELQUOT></h1>
+  <p>Validated in <DELQUOT>MOD_POPULATION<DELQUOT> (see below)</p>
 </header>
 
 <div class="app">
@@ -77,7 +78,7 @@
     <section class="covariates">
       #define X(machine_name, human_name_str, unit_str) \
         <div class="setting"> \
-          <label for=machine_name><span class="covar-name"><DESTRING>human_name_str</DESTRING></span> (<DESTRING>unit_str</DESTRING>)</label> \
+          <label for=machine_name><span class="covar-name"><DELQUOT>human_name_str<DELQUOT></span> (<DELQUOT>unit_str<DELQUOT>)</label> \
           <input type="text" id=machine_name size="6"> \
         </div>
       MOD_X_PARAMS
@@ -89,8 +90,8 @@
           <th style="width:6px"></th>
           <th class="temporal">Day</th>
           <th class="temporal">Time</th>
-          <th>Level<!-- (<DESTRING>MOD_OB_UNIT</DESTRING>)--></th>
-          <th>Dose (<DESTRING>MOD_DRUG_UNIT</DESTRING>)</th>
+          <th>Level<!-- (<DELQUOT>MOD_OB_UNIT<DELQUOT>)--></th>
+          <th>Dose (<DELQUOT>MOD_DRUG_UNIT<DELQUOT>)</th>
           <th style="width:6px"></th>
         </tr>
       </table>
@@ -98,7 +99,7 @@
   </aside>
   <main>
     <section class="graph" style="width:600px">
-      <h2>Predicted <DESTRING>MOD_DRUG</DESTRING> concentration (<DESTRING>MOD_OB_UNIT</DESTRING>)</h2>
+      <h2>Predicted <DELQUOT>MOD_DRUG<DELQUOT> concentration (<DELQUOT>MOD_OB_UNIT<DELQUOT>)</h2>
       <div id="expander" style="width: 100%; padding-top: 61.803398875%; position: relative;">
         <div id="container" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;">
           <svg id="plot" width="100%" height="100%" viewbox="0 0 162 100" style="background-color: #ffffff;" preserveAspectRatio="meet">
@@ -115,7 +116,7 @@
 </div>
 
 <footer>
-  <p><strong>Model:</strong> <DESTRING>MOD_REFERENCE</DESTRING></p>
+  <p><strong>Model:</strong> <DELQUOT>MOD_REFERENCE<DELQUOT></p>
   <p><strong>Open Dose &copy; 2017-2019 Open Dose Contributors.</strong></p>
 </footer>
 
