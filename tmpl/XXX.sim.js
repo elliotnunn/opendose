@@ -1,4 +1,5 @@
 kEnoughSims = 401; /* make this an odd number for the median calculation */
+kEnoughTimes = 401;
 
 function seriousMainThingDoer()
 {
@@ -12,10 +13,10 @@ function seriousMainThingDoer()
     /* idempotent, do nothing */
   }
 
-  gX = new Float64Array(401);
+  gX = [];
   var t = parseInt(document.querySelector("#OD-duration").value) * 24;
-  for (var i = 0; i < gX.length; i++) {
-    gX[i] = t * i / (gX.length - 1);
+  for (var i = 0; i < kEnoughTimes; i++) {
+    gX.push(t * i / (kEnoughTimes - 1));
   }
 
   /* Load user input (quite involved) */
@@ -26,6 +27,22 @@ function seriousMainThingDoer()
   for (var i = 0; i < scenario_array.length; i++) {
     parseDomScenario(scenario_array[i]);
   }
+
+  /* parseDomScenario edited gX but left it unsorted */
+  gX.sort((a, b) => a - b);
+  for (var i = gX.length - 2; i >= 0; i--) {
+    if (gX[i] == gX[i+1]) gX.splice(i+1, 1);
+  }
+
+  var tstrings = [];
+  gX.forEach(function (x) {
+    tstrings.push(x.toString() + " " + MOD_TIME_UNIT + " GET");
+  });
+  tstrings.push(""); tstrings = tstrings.join("\n");
+  scenario_array.forEach(function (scenario) {
+    scenario.stdin += tstrings;
+  });
+
 
   /* Callback to update the ui progress bar */
   function update_callback()
@@ -92,6 +109,7 @@ function parseDomScenario(scenario)
 {
   var dom = scenario.dom;
   scenario.levels = [];
+  scenario.dose_times = [];
 
   /* Marshal a bayes input file from the history */
   var ary = [];
@@ -135,18 +153,20 @@ function parseDomScenario(scenario)
       ary.push(t.toString() + " h EV " + rate.toString() + " " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
       ary.push((t+dur).toString() + " h EV 0 " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
 
+      /* Guarantee that every peak and trough get a time point (better check this later) */
+      gX.push(t);
+      gX.push(t+dur);
+
+      /* Notify the pharmacodynamic module of dose times */
+      scenario.dose_times.push(t);
+
       maxTime = Math.max(maxTime, t+dur);
       orderChecker = t+dur;
     }
   }
 
-  gX.forEach(function (x) {
-    ary.push(x.toString() + " h GET");
-  })
-
   ary.push(""); // trailing newline needed
-  query = ary.join("\n");
-  scenario.stdin = query;
+  scenario.stdin = ary.join("\n");
 }
 
 function simScenario(scenario, callback)
