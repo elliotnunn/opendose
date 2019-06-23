@@ -39,8 +39,8 @@ function pharmacodynamicReport(scenario) {
     var result_str = [];
     // result_str.push('AUC[95%CI]=' + Math.round(pctileFrom(2.5, aucs)) + '-' + Math.round(pctileFrom(97.5, aucs)));
     result_str.push('AUC[50%]=' + Math.round(pctileFrom(50, aucs)));
-    result_str.push('P(AUC lo)=' + percent_btm + '%');
-    result_str.push('P(AUC hi)=' + (100-percent_top) + '%');
+    result_str.push('P(low)=' + percent_btm + '%');
+    result_str.push('P(high)=' + (100-percent_top) + '%');
     ary.push(dose_str + ': ' + result_str.join(', '));
   }
 
