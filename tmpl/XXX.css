@@ -149,3 +149,12 @@ section.graph h2 {
   font-weight: normal;
   text-align: center;
 }
+
+
+/* Main component: report */
+section.report {
+  width: 100%;
+  padding: 12px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+}

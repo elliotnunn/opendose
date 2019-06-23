@@ -1,5 +1,4 @@
 kEnoughSims = 401; /* make this an odd number for the median calculation */
-kEnoughTimes = 401;
 
 function seriousMainThingDoer()
 {
@@ -13,26 +12,44 @@ function seriousMainThingDoer()
     /* idempotent, do nothing */
   }
 
-  gX = [];
-  var t = parseInt(document.querySelector("#OD-duration").value) * 24;
-  for (var i = 0; i < kEnoughTimes; i++) {
-    gX.push(t * i / (kEnoughTimes - 1));
-  }
-
   /* Load user input (quite involved) */
   var scenario_array = divideDomIntoScenarios(this); 
 
   /* Do one-off input parsing for each calculated scenario */
-  /* Calculates stdin and level members */
+  /* Calculates stdin and level members, and some others */
   for (var i = 0; i < scenario_array.length; i++) {
     parseDomScenario(scenario_array[i]);
   }
 
-  /* parseDomScenario edited gX but left it unsorted */
-  gX.sort((a, b) => a - b);
-  for (var i = gX.length - 2; i >= 0; i--) {
-    if (gX[i] == gX[i+1]) gX.splice(i+1, 1);
+  /* Each scenario will "insist" that certain times are sim'd */
+  var insisted = [];
+  scenario_array.forEach(function (sc) {sc.insist_times.forEach(function (x) {insisted.push(x)})});
+  insisted.sort((a, b) => a - b);
+
+  var dose_times = [];
+  scenario_array.forEach(function (sc) {sc.dose_times.forEach(function (x) {dose_times.push(x)})});
+  dose_times.sort((a, b) => a - b);
+
+  /* Hack for vancomycin PK/PD: simulate a whole number of days */
+  if (MOD_DRUG == 'vancomycin') {
+    if (dose_times.length > 0) {
+      var until = dose_times[dose_times.length - 1] + 24;
+      for (var i = 0; i < until + 24; i += 24) {
+        insisted.push(i);
+      }
+      insisted.sort((a, b) => a - b);
+    }
   }
+
+  /* Grow this "insisted" list into a global array gX */
+  var t = 0;
+  gX = [0];
+  insisted.forEach(function (i) {
+    while (i > t) {
+      t = Math.min(t + 0.1, i);
+      gX.push(t);
+    }
+  });
 
   var tstrings = [];
   gX.forEach(function (x) {
@@ -108,6 +125,7 @@ function divideDomIntoScenarios()
 function parseDomScenario(scenario)
 {
   var dom = scenario.dom;
+  scenario.insist_times = [];
   scenario.levels = [];
   scenario.dose_times = [];
 
@@ -154,8 +172,8 @@ function parseDomScenario(scenario)
       ary.push((t+dur).toString() + " h EV 0 " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
 
       /* Guarantee that every peak and trough get a time point (better check this later) */
-      gX.push(t);
-      gX.push(t+dur);
+      scenario.insist_times.push(t);
+      scenario.insist_times.push(t+dur);
 
       /* Notify the pharmacodynamic module of dose times */
       scenario.dose_times.push(t);
@@ -182,6 +200,10 @@ function simScenario(scenario, callback)
   }
 
   hardWorker.postMessage(scenario.stdin);
+}
+
+function escapeHTML(x) {
+  return x.split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;');
 }
 
 function updateUiProgress(scenario_array)
@@ -214,7 +236,7 @@ function updateUiProgress(scenario_array)
     document.querySelectorAll(".ephem").forEach(function (el) {el.remove()});
 
     updateYAxis(Math.max(...window.gScenarioArray[0].hconf));
-    updateXAxis(parseFloat(document.querySelector("#OD-duration").value) * 24);
+    updateXAxis(gX[gX.length - 1]);
     
     var colours = ["black", "red", "green", "blue", "orange", "purple"];
 
@@ -224,6 +246,15 @@ function updateUiProgress(scenario_array)
       blatStreet(colour, gX, scenario_array[i].lconf, scenario_array[i].hconf);
       blatLevels(colour, scenario_array[i].levels);
     }
+
+    /* Having done the graph, move on to the textual report */
+    scenario_array.forEach(function (scenario) {
+      scenario.report = pharmacodynamicReport(scenario);
+    });
+
+    var report = scenario_array.map(function (x) {return x.report}).join("\n" + "-".repeat(72) + "\n");
+    report = escapeHTML(report).split("\n").join("<br>");
+    document.querySelector("section.report").innerHTML = report;
   }
 }
 
@@ -263,6 +294,7 @@ function calcDescriptiveStats(scenario)
     return median;
   }
 
+  scenario.tTogether_etaApart = tTogether_etaApart;
 
   scenario.lconf = rip_index(10);
   scenario.median = rip_index(200);

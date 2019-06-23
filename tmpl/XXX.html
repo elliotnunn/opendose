@@ -6,6 +6,7 @@
 <script src="XXX.sim.js"></script>
 <script src="XXX.ui.js"></script>
 <script src="XXX.graph.js"></script>
+<script>function pharmacodynamicReport(scenario) {return "Report unimplemented for this drug"}</script>
 <script src=MOD_DRUG<DELQUOT>.pd.js"></script>
 
 <script>
@@ -59,9 +60,6 @@
   <aside>
     <section class="controls">
       <button type="button" id="do-it" class="btn btn-outline-dark" onclick="seriousMainThingDoer();">Simulate</button>
-      <div class="setting">
-        <label for="OD-duration">Duration (days)</label><input type="text" id="OD-duration" size="6" value="1">
-      </div>
     </section>
 
     <script type="text/javascript">
@@ -69,7 +67,7 @@
       if (the_drug == "vancomycin") {
         document.write('<section class="pharmacodynamics">');
         document.write('<div class="setting">')
-        document.write('<label for="OD-pd">MIC (mg/L)</label><input type="text" id="OD-pd" size="6" value="">')
+        document.write('<label for="OD-pd"><em>S. aureus</em> MIC (optional, mg/L)</label><input type="text" id="OD-pd" size="6" value="">')
         document.write('</div>');
         document.write('</section>');
       }
@@ -116,8 +114,7 @@
 </div>
 
 <footer>
-  <p><strong>Model:</strong> <DELQUOT>MOD_REFERENCE<DELQUOT></p>
-  <p><strong>Open Dose &copy; 2017-2019 Open Dose Contributors.</strong></p>
+  <p><strong>Model:</strong> <DELQUOT>MOD_REFERENCE<DELQUOT> <strong>Open Dose &copy; 2017-2019 Open Dose Contributors.</strong></p>
 </footer>
 
 <script>
