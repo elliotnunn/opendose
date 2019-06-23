@@ -266,7 +266,6 @@ function updateUiProgress(scenario_array)
 
 function calcDescriptiveStats(scenario)
 {
-  console.log(scenario.stdout);
   var num_eta = scenario.stdout.length - 1;
   var num_t = scenario.stdout[1].length - 1;
   var ary_len = num_eta * num_t;
@@ -320,8 +319,6 @@ function mkChartControlObject(scenario_array)
     obj.series.push(Array.from(scenario_array[i].hconf));
     // obj.series.push([1,2,3]);
   }
-
-  console.log(obj);
 
   /* fill obj out a bit */
 
