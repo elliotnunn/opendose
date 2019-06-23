@@ -255,7 +255,7 @@ function updateUiProgress(scenario_array)
 
     /* Having done the graph, move on to the textual report */
     scenario_array.forEach(function (scenario) {
-      scenario.report = pharmacodynamicReport(scenario);
+      scenario.report = pharmacokineticReport(scenario) + '\n\n' + pharmacodynamicReport(scenario);
     });
 
     var report = scenario_array.map(function (x) {return x.report}).join("\n" + "-".repeat(72) + "\n");
