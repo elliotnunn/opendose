@@ -259,7 +259,7 @@ function updateUiProgress(scenario_array)
     });
 
     var report = scenario_array.map(function (x) {return x.report}).join("\n" + "-".repeat(72) + "\n");
-    report = escapeHTML(report).split("\n").join("<br>");
+    report = report.split("\n").join("<br>");
     document.querySelector("section.report").innerHTML = report;
   }
 }

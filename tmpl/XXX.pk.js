@@ -38,15 +38,11 @@ function pharmacokineticReport (scenario) {
     str += ': ';
 
     if (scenario.levels.length > 0) {
-      var median_eta = pctileFrom(50, biglist[i]);
-      var zscore = median_eta / Math.sqrt(OMEGA[i][i]);
-      str += 'ETA=' + median_eta.toFixed(2) + ' Z=' + zscore.toFixed(1);
+      var zscores = [2.5, 50, 97.5].map(function (pctile) {
+        return pctileFrom(pctile, biglist[i]) / Math.sqrt(OMEGA[i][i]);
+      });
 
-      var result = 'normal range';
-      if (lo > 0) result = 'high, *p<0.05';
-      if (hi < 0) result = 'low, *p<0.05';
-      str += ' (' + result + ')';
-
+      str += mkSpeedbump(13, zscores);
     } else {
       str += 'presumed normal range';
     }
