@@ -144,6 +144,8 @@ function parseDomScenario(scenario)
   var maxTime = 0; /* How far out to take our graph */
   var orderChecker = 0;
 
+  var lastDose = '' /* For ditto evaluation */
+
   var rows = dom.querySelectorAll("section.history tr");
   for (var i = 1; i < rows.length; i++) {
     var cols = rows[i].querySelectorAll("input"); /* day time level dose */
@@ -164,9 +166,13 @@ function parseDomScenario(scenario)
       scenario.levels.push([t, parseFloat(cols[2].value)]);
     }
 
-    if (cols[3].value != '' && cols[3].value != '.') {
+    var theDose = cols[3].value;
+    if (theDose == '"') theDose = lastDose;
+    if (theDose != '' && theDose != '.') {
+      lastDose = theDose; /* Ditto the last dose that was actually given */
+
       var dur = 1; /* everything pushed over one hour for now */
-      var rate = cols[3].value / dur;
+      var rate = theDose / dur;
 
       ary.push(t.toString() + " h EV " + rate.toString() + " " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
       ary.push((t+dur).toString() + " h EV 0 " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);

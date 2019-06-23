@@ -43,7 +43,12 @@ function OD_key(event) {
   if (event.code == 'Enter' && event.type == 'keyup') {
     var dup_targ = event.target.parentNode.parentNode;
     var new_el = dup_targ.cloneNode(true);
-    new_el.querySelectorAll('input')[2] = ''; /* levels should never be duplicated */
+    new_el.querySelectorAll('input')[2].value = ''; /* levels should never be duplicated */
+
+    if (new_el.querySelectorAll('input')[3].value != '') {
+      new_el.querySelectorAll('input')[3].value = '"'; /* doses should be replaced with ditto */
+    }
+
     dup_targ.after(new_el);
     new_el.querySelectorAll('input')[0].focus();
   }
