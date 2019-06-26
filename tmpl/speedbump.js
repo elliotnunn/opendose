@@ -1,7 +1,7 @@
 /* Return SVG code to make an inline "speedbump": */
 /* a bell curve with a tick at each member of zscores */
 function mkSpeedbump(zwidth, zscores) {
-  var height_px = 13;
+  var height_px = 15;
   var narrowest = 3.5; /* min stdevs above and below the bell */
 
   var lreach = Math.floor(Math.min(-narrowest, ...zscores)) * zwidth - 1;
@@ -27,13 +27,13 @@ function mkSpeedbump(zwidth, zscores) {
 
   zscores.forEach(function (z) {
     var x = -lreach + z*zwidth;
-    elems.push('<line style="" class="speedbump-nick" y1="3.5" y2="9.5" x1="?" x2="?" />'.split('?').join(x));
+    elems.push('<line style="" class="speedbump-nick" y1="4.5" y2="10.5" x1="?" x2="?" />'.split('?').join(x));
   });
 
   if (zscores.length >= 2) {
     var x1 = -lreach + Math.min(...zscores) * zwidth;
     var x2 = -lreach + Math.max(...zscores) * zwidth;
-    elems.push('<line style="" class="speedbump-line" y1="6.5" y2="6.5" x1="' + x1 + '" x2="' + x2 + '" />');
+    elems.push('<line style="" class="speedbump-line" y1="7.5" y2="7.5" x1="' + x1 + '" x2="' + x2 + '" />');
   }
 
   elems.push('</svg>');
