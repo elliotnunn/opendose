@@ -171,8 +171,8 @@ function parseDomScenario(scenario)
     if (theDose != '' && theDose != '.') {
       lastDose = theDose; /* Ditto the last dose that was actually given */
 
-      var dur = 1; /* everything pushed over one hour for now */
-      var rate = theDose / dur;
+      var rate = 600;
+      var dur = theDose / rate;
 
       ary.push(t.toString() + " h EV " + rate.toString() + " " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
       ary.push((t+dur).toString() + " h EV 0 " + MOD_DRUG_UNIT + "/" + MOD_TIME_UNIT);
