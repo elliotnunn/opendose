@@ -1,0 +1,21 @@
+# Future thoughts for baypk
+
+The MANUAL/ETA dichotomy missed a neat insight: that after we have set
+up context, the generation of ETAs can be an interactive command. Hell,
+this could even be mediated by Unix job control if we're clever. Like
+so:
+
+  - ETA 0 0 0
+  - GENETA 100
+  - GENETA 100 1000000
+
+True interactivity should be reserved for a shell user, though. I do not
+think that a long-running and interacting "God" process is necessary.
+
+Also -- I can ditch my "LEVEL" special case. This would allow to peform
+Bayesian voodoo on *any* list of ETAs that we find, making the process
+more orthogonal.
+
+By the way: the process should quit when it reaches EOF! This is a way
+to mark where the end of input corresponds with the end of output. I
+don't think that there is a better way to do this.
