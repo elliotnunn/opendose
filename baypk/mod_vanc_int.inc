@@ -98,7 +98,7 @@ double mod_observe(struct sol_params params, struct sol_cmts cmts)
 /* Get the pdf of an observed concentration, given the predicted one */
 double mod_pdf(double observed, double expected)
 {
-    double variance = pow(1.6, 2) + pow(0.15*expected, 2);
+    double variance = pow(0.15*expected, 2);
     double zscore = (observed - expected) / sqrt(variance);
     return -0.5 * zscore * zscore;
 }
