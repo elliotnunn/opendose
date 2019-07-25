@@ -18,10 +18,12 @@
 
 set -euo pipefail
 
-baypk="$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
+baypk=baypk
 cd "$(dirname "$0")"; cd .. # cd to opendose directory
 
 rm -f *.html *.js *.wasm *.css || true # Don't worry, it's fiiiiine
+
+(cd "$baypk" && ./build.sh)
 
 engines="`ls "$baypk"/macros | sed 's/.h$//'`"
 
